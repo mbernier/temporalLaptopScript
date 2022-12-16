@@ -259,11 +259,12 @@ function setup_github(){
 function check_exists_by_calling_version() {
     #$1 is the thing to check version on
     versionOfThing=`eval ${1} ${2}`
-    versionNumberOfThing=`$1 $2 | sed 's/[^0-9\.]*//g' | head -1`
-    if [[ "$versionOfthing" == *"${1} version"* ]]; then
-        check_exists_value=0
-    else 
-        check_exists_value=1
+    check_exists_value=0
+    if [ "$versionOfThing" != "" ]; then
+        versionNumberOfThing=`$1 $2 | sed 's/[^0-9\.]*//g' | head -1`
+        if [[ $versionOfThing =~ "${1} version" ]] || [[ $versionOfThing =~ "${1} $versionNumberOfThing" ]] || [[ $versionOfThing =~ "$versionNumberOfThing" ]]; then
+            check_exists_value=1
+        fi
     fi
 }
 
@@ -278,7 +279,7 @@ function if_not_exists_install() {
         versionParam=$3
     fi
     check_exists_by_calling_version $1 $versionParam
-    if [[ check_exists_value == 0 ]]; then
+    if [[ "$check_exists_value" = "0" ]]; then
         echo "$1 is not installed, installing now..."
         eval $2
     else
@@ -325,7 +326,7 @@ function clone_a_repo(){
 if_not_exists_install "xcode-select" "xcode-select --install"
 
 # install homebrew
-if_not_exists_install "brew" "/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
+if_not_exists_install "brew" '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
 
 if brew doctor | grep -q 'Your system is ready to brew'; then
     echo "brew is installed and ready to go"
@@ -405,9 +406,6 @@ fi
         echo "git failed to install, try running `brew install git` or scrolling up for error messages and then run this script again"
     fi
 
-# else
-#     echo "brew failed to install, scroll up for errors or trying running this script again"
-# fi
 
 
 echo "\n"
