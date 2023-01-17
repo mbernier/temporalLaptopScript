@@ -10,4 +10,5 @@ This script will make installing brew, git, gh, and some common programming lang
 - Type `cd projects` to go to the directory where you will run the file
 - Type `touch run.sh` to create a file
 - Type `pbpaste > run.sh` to paste what you copied into the file you created
+- Type `chmod 777 run.sh`
 - Type `./run.sh` and follow the prompts
